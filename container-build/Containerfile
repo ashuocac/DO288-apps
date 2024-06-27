@@ -1,2 +1,17 @@
 # Use the httpd-parent image as base
-FROM quay.io/redhattraining/httpd-parent
+FROM  registry.access.redhat.com/ubi8/ubi:8.0
+
+ENV DOCROOT=/var/www/html
+
+RUN yum install -y --no-docs --disableplugin=subscription-manager httpd && \ 
+ yum clean all --disableplugin=subscription-manager -y
+
+RUN mkdir -p /var/www/html/ && echo “Hello container!” >/var/www/html/index.html && rm -rf /run/httpd && mkdir /run/httpd
+
+LABEL version="1.0" description="this is Containerfile" maintainer "Red Hat Training<training@redhat.com>"
+
+ONBUILD COPY SRC/ ${DOCROOT}/
+
+EXPOSE 80
+
+
